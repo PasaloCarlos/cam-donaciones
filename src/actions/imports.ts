@@ -13,13 +13,17 @@ type SupabaseAdmin = ReturnType<typeof createAdminClient>;
 
 // Load the current donor index + existing payment idempotency keys (service-role).
 async function loadIngestContext(supabase: SupabaseAdmin) {
-  const [{ data: donors }, { data: keys }] = await Promise.all([
+  const [{ data: donors }, { data: payKeys }, { data: pledges }] = await Promise.all([
     supabase.from("donors").select("id, email_normalized, name_normalized, phone_normalized"),
     supabase.from("payments").select("idempotency_key"),
+    supabase.from("pledges").select("donor_id, source, source_year"),
   ]);
   return {
     donorIndex: buildDonorIndex(donors ?? []),
-    existingPaymentKeys: new Set<string>((keys ?? []).map((k) => k.idempotency_key as string)),
+    existingPaymentKeys: new Set<string>((payKeys ?? []).map((k) => k.idempotency_key as string)),
+    existingPledgeKeys: new Set<string>(
+      (pledges ?? []).map((p) => `${p.donor_id}|${p.source}|${p.source_year ?? ""}`)
+    ),
   };
 }
 

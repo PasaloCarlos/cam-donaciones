@@ -60,6 +60,22 @@ describe("planImport", () => {
     expect(plan.skippedPayments).toBe(1);
   });
 
+  it("skips creating a pledge that already exists (existingPledgeKeys)", () => {
+    const index = buildDonorIndex([
+      { id: "D1", email_normalized: "doris@gmail.com", name_normalized: "doris acevedo", phone_normalized: "7875551234" },
+    ]);
+    const plan = planImport([rec()], {
+      donorIndex: index, existingPaymentKeys: new Set(),
+      existingPledgeKeys: new Set(["D1|stripe|2026"]),
+    });
+    expect(plan.pledgesToCreate).toHaveLength(0);
+  });
+
+  it("dedups duplicate pledges within one batch (same donor+source+year)", () => {
+    const plan = planImport([rec(), rec()], { donorIndex: buildDonorIndex([]), existingPaymentKeys: new Set() });
+    expect(plan.pledgesToCreate).toHaveLength(1);
+  });
+
   it("does not merge distinct anonymous rows (no email, no name) into one donor", () => {
     const anon = (periodMonth: string): NormalizedRecord => ({
       donor: { email: null, name: "", phone: null },
