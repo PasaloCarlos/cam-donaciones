@@ -3,7 +3,7 @@ import type { DonationSource, PledgeKind, PledgeStatus, DonationGoal } from "@/t
 export type MetricPledge = {
   id: string; donor_id: string; source: DonationSource; kind: PledgeKind; status: PledgeStatus;
   goal: DonationGoal | null; monthly_net_cents: number | null; monthly_gross_cents: number | null;
-  subscription_date: string | null; cancelled_at: string | null;
+  subscription_date: string | null; cancelled_at: string | null; source_year: number | null;
 };
 export type MetricPayment = {
   donor_id: string; source: DonationSource; period_month: string;
@@ -15,12 +15,23 @@ export function monthsBetween(a: Date, b: Date): number {
 }
 
 export function activeMrrCents(pledges: MetricPledge[]): { netCents: number; grossCents: number } {
-  let netCents = 0, grossCents = 0;
+  // A donor with the same source across multiple years (one tab per year) has
+  // one active recurring pledge per year; only the LATEST represents their
+  // current monthly commitment. Counting every year would inflate MRR.
+  // Different sources for the same donor are distinct real commitments.
+  const latestPerDonorSource = new Map<string, MetricPledge>();
   for (const p of pledges) {
-    if (p.kind === "recurring" && p.status === "active") {
-      netCents += p.monthly_net_cents ?? 0;
-      grossCents += p.monthly_gross_cents ?? 0;
+    if (p.kind !== "recurring" || p.status !== "active") continue;
+    const key = `${p.donor_id}|${p.source}`;
+    const cur = latestPerDonorSource.get(key);
+    if (!cur || (p.source_year ?? 0) > (cur.source_year ?? 0)) {
+      latestPerDonorSource.set(key, p);
     }
+  }
+  let netCents = 0, grossCents = 0;
+  for (const p of latestPerDonorSource.values()) {
+    netCents += p.monthly_net_cents ?? 0;
+    grossCents += p.monthly_gross_cents ?? 0;
   }
   return { netCents, grossCents };
 }

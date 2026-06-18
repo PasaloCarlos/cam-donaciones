@@ -6,11 +6,11 @@ const asOf = new Date("2026-06-15T00:00:00Z");
 
 const pledges: MetricPledge[] = [
   { id: "p1", donor_id: "A", source: "stripe", kind: "recurring", status: "active", goal: "operacion_general",
-    monthly_net_cents: 2500, monthly_gross_cents: 2601, subscription_date: "2025-01-01", cancelled_at: null },
+    monthly_net_cents: 2500, monthly_gross_cents: 2601, subscription_date: "2025-01-01", cancelled_at: null, source_year: null },
   { id: "p2", donor_id: "B", source: "paypal", kind: "recurring", status: "cancelled", goal: "compras_solidarias",
-    monthly_net_cents: 5000, monthly_gross_cents: 5152, subscription_date: "2024-01-01", cancelled_at: "2026-02-01" },
+    monthly_net_cents: 5000, monthly_gross_cents: 5152, subscription_date: "2024-01-01", cancelled_at: "2026-02-01", source_year: null },
   { id: "p3", donor_id: "C", source: "special", kind: "one_time", status: "active", goal: "operacion_general",
-    monthly_net_cents: null, monthly_gross_cents: null, subscription_date: "2025-12-08", cancelled_at: null },
+    monthly_net_cents: null, monthly_gross_cents: null, subscription_date: "2025-12-08", cancelled_at: null, source_year: null },
 ];
 const payments: MetricPayment[] = [
   { donor_id: "A", source: "stripe", period_month: "2026-06-01", gross_cents: 2601, net_cents: 2500, goal: "operacion_general" },
