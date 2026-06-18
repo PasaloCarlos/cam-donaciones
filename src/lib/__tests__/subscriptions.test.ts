@@ -26,7 +26,7 @@ describe("consolidateSubscriptions", () => {
     expect(g.source).toBe("stripe");
     expect(g.firstYear).toBe(2025);
     expect(g.lastYear).toBe(2026);
-    expect(g.yearCount).toBe(2);
+    expect(g.pledgeCount).toBe(2);
     expect(g.status).toBe("active");
     expect(g.monthlyNetCents).toBe(2500);          // latest year
     expect(g.goal).toBe("compras_solidarias");     // latest year
@@ -60,7 +60,7 @@ describe("consolidateSubscriptions", () => {
     expect(groups[0].source).toBe("stripe");
   });
 
-  it("single recurring pledge → group with firstYear === lastYear, yearCount 1", () => {
+  it("single recurring pledge → group with firstYear === lastYear, pledgeCount 1", () => {
     const pledges: MetricPledge[] = [
       pledge({ source: "cam_cash", kind: "recurring", status: "paused", source_year: 2024, monthly_net_cents: 750, goal: "operacion_general" }),
     ];
@@ -69,7 +69,7 @@ describe("consolidateSubscriptions", () => {
     const g = groups[0];
     expect(g.firstYear).toBe(2024);
     expect(g.lastYear).toBe(2024);
-    expect(g.yearCount).toBe(1);
+    expect(g.pledgeCount).toBe(1);
     expect(g.status).toBe("paused");
   });
 
@@ -81,6 +81,6 @@ describe("consolidateSubscriptions", () => {
     expect(groups).toHaveLength(1);
     expect(groups[0].firstYear).toBeNull();
     expect(groups[0].lastYear).toBeNull();
-    expect(groups[0].yearCount).toBe(1);
+    expect(groups[0].pledgeCount).toBe(1);
   });
 });

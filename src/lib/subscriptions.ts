@@ -5,7 +5,7 @@ export type SubscriptionGroup = {
   source: string;
   firstYear: number | null;
   lastYear: number | null;
-  yearCount: number;
+  pledgeCount: number;
   status: PledgeStatus;
   monthlyNetCents: number | null;
   monthlyGrossCents: number | null;
@@ -33,7 +33,7 @@ export function consolidateSubscriptions(pledges: MetricPledge[]): SubscriptionG
       source,
       firstYear: years.length ? Math.min(...years) : null,
       lastYear: years.length ? Math.max(...years) : null,
-      yearCount: ps.length,
+      pledgeCount: ps.length,
       status: latest.status,
       monthlyNetCents: latest.monthly_net_cents,
       monthlyGrossCents: latest.monthly_gross_cents,

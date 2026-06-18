@@ -23,6 +23,7 @@ export function DonorDetail({ detail }: { detail: Detail }) {
       {/* ── Suscripciones ─────────────────────────────────────── */}
       {(() => {
         const groups: SubscriptionGroup[] = consolidateSubscriptions(pledges);
+        if (groups.length === 0) return null;
         const STATUS_ES: Record<string, string> = { active: "Activa", cancelled: "Cancelada", paused: "Pausada" };
         const yearSpan = (g: SubscriptionGroup) => {
           if (g.firstYear == null) return null;
