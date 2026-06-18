@@ -41,6 +41,7 @@ export function Dashboard({ stats }: { stats: DonorDashboard }) {
 function Breakdown({ title, rows }: { title: string; rows: { label: string; grossCents: number; netCents: number; count: number }[] }) {
   return (
     <section className="overflow-hidden rounded-2xl border border-border">
+      <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead className="bg-secondary/40 text-left font-display text-xs uppercase tracking-widest text-muted-foreground">
           <tr><th className="px-4 py-3">{title}</th><th className="px-3 py-3 text-right"># pagos</th><th className="px-3 py-3 text-right">Neto</th></tr>
@@ -57,6 +58,7 @@ function Breakdown({ title, rows }: { title: string; rows: { label: string; gros
           ))}
         </tbody>
       </table>
+      </div>
     </section>
   );
 }

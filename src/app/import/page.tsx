@@ -11,7 +11,7 @@ export default function ImportPage() {
         <AdminNav />
         <header className="mb-8">
           <p className="font-display text-sm uppercase tracking-[0.3em] text-primary">Datos</p>
-          <h1 className="mt-1 font-display text-5xl font-black uppercase">Importar</h1>
+          <h1 className="mt-1 font-display text-4xl font-black uppercase sm:text-5xl">Importar</h1>
         </header>
         <ImportClient />
       </div>

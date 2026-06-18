@@ -14,7 +14,7 @@ export default async function DonantesPage({ searchParams }: { searchParams: Pro
         <AdminNav />
         <header className="mb-8">
           <p className="font-display text-sm uppercase tracking-[0.3em] text-primary">Base de datos</p>
-          <h1 className="mt-1 font-display text-5xl font-black uppercase">Donantes</h1>
+          <h1 className="mt-1 font-display text-4xl font-black uppercase sm:text-5xl">Donantes</h1>
         </header>
         <DonorTable donors={donors} initialQuery={q ?? ""} />
       </div>

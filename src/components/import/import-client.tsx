@@ -61,7 +61,7 @@ export function ImportClient() {
             <Label htmlFor="year">Año (para Pagos CAM)</Label>
             <Input id="year" value={year} onChange={(e) => setYear(e.target.value)} className="w-28" inputMode="numeric" />
           </div>
-          <Button onClick={doPreview} disabled={pending || !file}>Previsualizar</Button>
+          <Button onClick={doPreview} disabled={pending || !file} className="w-full sm:w-auto">Previsualizar</Button>
         </div>
 
         {preview && (
@@ -90,7 +90,7 @@ export function ImportClient() {
                 </ul>
               </div>
             )}
-            <Button onClick={doCommit} disabled={pending} size="lg">Confirmar e importar</Button>
+            <Button onClick={doCommit} disabled={pending} size="lg" className="w-full sm:w-auto">Confirmar e importar</Button>
           </div>
         )}
       </section>
@@ -136,10 +136,13 @@ export function ImportClient() {
               <option value="compras_solidarias">{donor.goals.compras_solidarias}</option>
             </select>
           </div>
-          <div><Label htmlFor="m-month">Mes (YYYY-MM) *</Label><Input id="m-month" name="periodMonth" required placeholder="2026-03" /></div>
+          <div>
+            <Label htmlFor="m-month">Mes *</Label>
+            <input id="m-month" name="periodMonth" type="month" required className="flex h-11 w-full rounded-lg border border-input bg-secondary/40 px-3.5 text-base" />
+          </div>
           <div><Label htmlFor="m-gross">Monto bruto ($) *</Label><Input id="m-gross" name="gross" required inputMode="decimal" /></div>
           <div><Label htmlFor="m-fee">Comisión ($)</Label><Input id="m-fee" name="fee" defaultValue="0" inputMode="decimal" /></div>
-          <div className="sm:col-span-2"><Button type="submit" disabled={pending}>Guardar donativo</Button></div>
+          <div className="sm:col-span-2"><Button type="submit" disabled={pending} className="w-full sm:w-auto">Guardar donativo</Button></div>
         </form>
       </section>
     </div>
