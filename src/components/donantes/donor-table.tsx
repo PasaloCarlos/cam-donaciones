@@ -44,7 +44,7 @@ export function DonorTable({ donors, initialQuery }: { donors: DonorListItem[]; 
                 </div>
                 <div className="flex shrink-0 flex-col items-end gap-1">
                   <Badge variant={STATUS[d.status].variant}>{STATUS[d.status].label}</Badge>
-                  <span className="text-xs text-muted-foreground tabular-nums">{d.pledgeCount} compromisos</span>
+                  <span className="text-xs text-muted-foreground tabular-nums">{d.subscriptionCount} suscripciones</span>
                 </div>
               </Link>
             ))}
@@ -54,7 +54,7 @@ export function DonorTable({ donors, initialQuery }: { donors: DonorListItem[]; 
           <div className="hidden overflow-x-auto rounded-2xl border border-border sm:block">
             <table className="w-full text-sm">
               <thead className="bg-secondary/40 text-left font-display text-xs uppercase tracking-widest text-muted-foreground">
-                <tr><th className="px-4 py-3">Donante</th><th className="px-3 py-3">Estado</th><th className="px-3 py-3 text-right">Compromisos</th></tr>
+                <tr><th className="px-4 py-3">Donante</th><th className="px-3 py-3">Estado</th><th className="px-3 py-3 text-right">Suscripciones</th></tr>
               </thead>
               <tbody>
                 {donors.map((d) => (
@@ -64,7 +64,7 @@ export function DonorTable({ donors, initialQuery }: { donors: DonorListItem[]; 
                       {d.email_normalized && <span className="block text-xs text-muted-foreground">{d.email_normalized}</span>}
                     </td>
                     <td className="px-3 py-3"><Badge variant={STATUS[d.status].variant}>{STATUS[d.status].label}</Badge></td>
-                    <td className="px-3 py-3 text-right tabular-nums">{d.pledgeCount}</td>
+                    <td className="px-3 py-3 text-right tabular-nums">{d.subscriptionCount}</td>
                   </tr>
                 ))}
               </tbody>
