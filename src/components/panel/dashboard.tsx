@@ -3,10 +3,11 @@ import { formatCents } from "@/lib/money";
 import type { DonorDashboard } from "@/lib/donor-dashboard";
 
 function Tile({ label, value }: { label: string; value: string | number }) {
+  const isMoney = typeof value === "string";
   return (
     <div className="rounded-xl border border-border bg-card/70 px-5 py-4">
-      <p className="font-display text-4xl font-black text-primary tabular-nums">{value}</p>
-      <p className="font-display text-xs uppercase tracking-widest text-muted-foreground">{label}</p>
+      <p className={`font-display font-black text-primary tabular-nums leading-tight ${isMoney ? "text-2xl" : "text-4xl"}`}>{value}</p>
+      <p className="mt-1 font-display text-xs uppercase tracking-widest text-muted-foreground">{label}</p>
     </div>
   );
 }
@@ -26,7 +27,7 @@ export function Dashboard({ stats }: { stats: DonorDashboard }) {
         <Tile label="Cancelados" value={donorCounts.cancelled} />
       </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Tile label="Donativos únicos" value={donorCounts.one_time_only} />
+        <Tile label="Donativos especiales" value={donorCounts.one_time_only} />
         <Tile label="Total donantes" value={donorCounts.total} />
         <Tile label="Recaudado (total)" value={money(totalRaisedCents)} />
         <Tile label="Recaudado (año)" value={money(ytdRaisedCents)} />
