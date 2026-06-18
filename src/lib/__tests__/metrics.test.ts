@@ -7,7 +7,7 @@ const asOf = new Date("2026-06-15T00:00:00Z");
 function pledge(p: Partial<MetricPledge> = {}): MetricPledge {
   return { id: "p", donor_id: "d", source: "stripe", kind: "recurring", status: "active",
     goal: "operacion_general", monthly_net_cents: 2500, monthly_gross_cents: 2601,
-    subscription_date: "2025-01-10", cancelled_at: null, ...p };
+    subscription_date: "2025-01-10", cancelled_at: null, source_year: 2026, ...p };
 }
 function pay(p: Partial<MetricPayment> = {}): MetricPayment {
   return { donor_id: "d", source: "stripe", period_month: "2026-06-01",
@@ -15,14 +15,28 @@ function pay(p: Partial<MetricPayment> = {}): MetricPayment {
 }
 
 describe("activeMrrCents", () => {
-  it("sums net+gross over active recurring pledges only", () => {
+  it("sums net+gross over active recurring pledges across donors/sources", () => {
     const r = activeMrrCents([
-      pledge({ monthly_net_cents: 2500, monthly_gross_cents: 2601 }),
-      pledge({ status: "cancelled", monthly_net_cents: 9999 }),
-      pledge({ kind: "one_time", monthly_net_cents: 9999 }),
-      pledge({ monthly_net_cents: 5000, monthly_gross_cents: 5152 }),
+      pledge({ donor_id: "a", source: "stripe", monthly_net_cents: 2500, monthly_gross_cents: 2601 }),
+      pledge({ donor_id: "b", source: "stripe", status: "cancelled", monthly_net_cents: 9999 }),
+      pledge({ donor_id: "c", source: "stripe", kind: "one_time", monthly_net_cents: 9999 }),
+      pledge({ donor_id: "d", source: "paypal", monthly_net_cents: 5000, monthly_gross_cents: 5152 }),
     ]);
     expect(r).toEqual({ netCents: 7500, grossCents: 7753 });
+  });
+  it("counts only the latest-year pledge per donor+source (no multi-year double count)", () => {
+    const r = activeMrrCents([
+      pledge({ donor_id: "a", source: "paypal", source_year: 2025, monthly_net_cents: 2500, monthly_gross_cents: 2601 }),
+      pledge({ donor_id: "a", source: "paypal", source_year: 2026, monthly_net_cents: 3000, monthly_gross_cents: 3100 }),
+    ]);
+    expect(r).toEqual({ netCents: 3000, grossCents: 3100 });
+  });
+  it("counts a donor's different sources separately", () => {
+    const r = activeMrrCents([
+      pledge({ donor_id: "a", source: "paypal", source_year: 2026, monthly_net_cents: 3000, monthly_gross_cents: 3100 }),
+      pledge({ donor_id: "a", source: "cam_cash", source_year: 2026, monthly_net_cents: 2000, monthly_gross_cents: 2000 }),
+    ]);
+    expect(r).toEqual({ netCents: 5000, grossCents: 5100 });
   });
 });
 
