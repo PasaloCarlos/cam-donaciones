@@ -10,7 +10,7 @@ import type { DonorListItem, DonorStatus } from "@/actions/donors";
 
 const STATUS: Record<DonorStatus, { label: string; variant: "confirmed" | "pending" | "cancelled" | "paid" }> = {
   active: { label: "Activo", variant: "confirmed" },
-  lapsed: { label: "Lapsed", variant: "pending" },
+  lapsed: { label: "Inactivo", variant: "pending" },
   cancelled: { label: "Cancelado", variant: "cancelled" },
   one_time_only: { label: "Único", variant: "paid" },
 };

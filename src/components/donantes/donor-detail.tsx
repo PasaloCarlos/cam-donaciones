@@ -5,6 +5,7 @@ import type { DonorDetail as Detail } from "@/actions/donors";
 
 const SRC = cfg.sources as Record<string, string>;
 const GOAL = cfg.goals as Record<string, string>;
+const PLEDGE_STATUS: Record<string, string> = { active: "Activo", cancelled: "Cancelado", paused: "Pausado" };
 
 export function DonorDetail({ detail }: { detail: Detail }) {
   const { donor, pledges, timeline } = detail;
@@ -25,7 +26,7 @@ export function DonorDetail({ detail }: { detail: Detail }) {
           {pledges.map((p) => (
             <div key={p.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border bg-card/60 px-4 py-3 text-sm">
               <span className="font-medium text-foreground">{SRC[p.source] ?? p.source}</span>
-              <span className="text-muted-foreground">{p.kind === "recurring" ? "Mensual" : "Único"} · {p.status}{p.goal ? ` · ${GOAL[p.goal] ?? p.goal}` : ""}</span>
+              <span className="text-muted-foreground">{p.kind === "recurring" ? "Mensual" : "Único"} · {PLEDGE_STATUS[p.status] ?? p.status}{p.goal ? ` · ${GOAL[p.goal] ?? p.goal}` : ""}</span>
               <span className="tabular-nums text-foreground">{p.monthly_net_cents != null ? `${formatCents(p.monthly_net_cents, cfg.currency)}/mes` : "—"}</span>
             </div>
           ))}

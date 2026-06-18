@@ -22,7 +22,7 @@ export function Dashboard({ stats }: { stats: DonorDashboard }) {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Tile label="Recaudo mensual (MRR neto)" value={money(mrr.netCents)} />
         <Tile label="Donantes activos" value={donorCounts.active} />
-        <Tile label="Lapsed" value={donorCounts.lapsed} />
+        <Tile label="Inactivos" value={donorCounts.lapsed} />
         <Tile label="Cancelados" value={donorCounts.cancelled} />
       </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
