@@ -90,12 +90,13 @@ export async function runLegacyImport(
 ): Promise<ImportPreview | { committed: true; counts: ImportPlan["counts"] }> {
   await requireAdmin();
   const file = formData.get("file") as File | null;
-  const defaultYear = Number(formData.get("defaultYear") ?? new Date().getUTCFullYear());
+  const rawYear = Number(formData.get("defaultYear"));
+  const defaultYear = Number.isFinite(rawYear) && rawYear >= 2000 ? rawYear : new Date().getUTCFullYear();
   const mode = String(formData.get("mode") ?? "preview");
   if (!file) throw new Error("No se recibió un archivo.");
 
   const buf = await file.arrayBuffer();
-  const { records, tabs } = readLegacyWorkbook(buf, Number.isFinite(defaultYear) ? defaultYear : new Date().getUTCFullYear());
+  const { records, tabs } = readLegacyWorkbook(buf, defaultYear);
 
   const supabase = createAdminClient();
   const ctx = await loadIngestContext(supabase);
