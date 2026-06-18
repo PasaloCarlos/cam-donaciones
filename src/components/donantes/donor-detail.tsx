@@ -2,10 +2,10 @@ import Link from "next/link";
 import { donor as cfg } from "@/config/donor.config";
 import { formatCents } from "@/lib/money";
 import type { DonorDetail as Detail } from "@/actions/donors";
+import { consolidateSubscriptions, type SubscriptionGroup } from "@/lib/subscriptions";
 
 const SRC = cfg.sources as Record<string, string>;
 const GOAL = cfg.goals as Record<string, string>;
-const PLEDGE_STATUS: Record<string, string> = { active: "Activo", cancelled: "Cancelado", paused: "Pausado" };
 
 export function DonorDetail({ detail }: { detail: Detail }) {
   const { donor, pledges, timeline } = detail;
@@ -20,18 +20,60 @@ export function DonorDetail({ detail }: { detail: Detail }) {
         </p>
       </header>
 
-      <section>
-        <h2 className="mb-3 font-display text-xs uppercase tracking-widest text-muted-foreground">Compromisos ({pledges.length})</h2>
-        <div className="space-y-2">
-          {pledges.map((p) => (
-            <div key={p.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border bg-card/60 px-4 py-3 text-sm">
-              <span className="font-medium text-foreground">{SRC[p.source] ?? p.source}</span>
-              <span className="text-muted-foreground">{p.kind === "recurring" ? "Mensual" : "Único"} · {PLEDGE_STATUS[p.status] ?? p.status}{p.goal ? ` · ${GOAL[p.goal] ?? p.goal}` : ""}</span>
-              <span className="tabular-nums text-foreground">{p.monthly_net_cents != null ? `${formatCents(p.monthly_net_cents, cfg.currency)}/mes` : "—"}</span>
+      {/* ── Suscripciones ─────────────────────────────────────── */}
+      {(() => {
+        const groups: SubscriptionGroup[] = consolidateSubscriptions(pledges);
+        const STATUS_ES: Record<string, string> = { active: "Activa", cancelled: "Cancelada", paused: "Pausada" };
+        const yearSpan = (g: SubscriptionGroup) => {
+          if (g.firstYear == null) return null;
+          return g.firstYear === g.lastYear ? String(g.firstYear) : `${g.firstYear}–${g.lastYear}`;
+        };
+        return (
+          <section>
+            <h2 className="mb-3 font-display text-xs uppercase tracking-widest text-muted-foreground">
+              Suscripciones ({groups.length})
+            </h2>
+            <div className="space-y-2">
+              {groups.map((g) => (
+                <div key={g.source} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border bg-card/60 px-4 py-3 text-sm">
+                  <span className="font-medium text-foreground">{SRC[g.source] ?? g.source}</span>
+                  <span className="text-muted-foreground">
+                    {yearSpan(g) ? `${yearSpan(g)} · ` : ""}{STATUS_ES[g.status] ?? g.status}
+                    {g.goal ? ` · ${GOAL[g.goal] ?? g.goal}` : ""}
+                  </span>
+                  <span className="tabular-nums text-foreground">
+                    {g.monthlyNetCents != null ? `${formatCents(g.monthlyNetCents, cfg.currency)}/mes` : "—"}
+                  </span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </section>
+          </section>
+        );
+      })()}
+
+      {/* ── Donativos especiales ────────────────────────────────── */}
+      {(() => {
+        const oneTime = pledges.filter((p) => p.kind === "one_time");
+        if (oneTime.length === 0) return null;
+        return (
+          <section>
+            <h2 className="mb-3 font-display text-xs uppercase tracking-widest text-muted-foreground">
+              Donativos especiales ({oneTime.length})
+            </h2>
+            <div className="space-y-2">
+              {oneTime.map((p) => (
+                <div key={p.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border bg-card/60 px-4 py-3 text-sm">
+                  <span className="font-medium text-foreground">{SRC[p.source] ?? p.source}</span>
+                  <span className="text-muted-foreground">{p.goal ? (GOAL[p.goal] ?? p.goal) : "sin objetivo"}</span>
+                  <span className="tabular-nums text-foreground">
+                    {p.monthly_net_cents != null ? `${formatCents(p.monthly_net_cents, cfg.currency)}` : "—"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+        );
+      })()}
 
       <section>
         <h2 className="mb-3 font-display text-xs uppercase tracking-widest text-muted-foreground">Historial de pagos ({timeline.length})</h2>

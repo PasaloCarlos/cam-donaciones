@@ -7,11 +7,12 @@ import { donorTimeline, type TimelineEntry } from "@/lib/donor-timeline";
 import { donor as donorCfg } from "@/config/donor.config";
 import { PLEDGE_COLS, PAYMENT_COLS } from "@/lib/query-cols";
 import { fetchAllRows } from "@/lib/supabase/page";
+import { consolidateSubscriptions } from "@/lib/subscriptions";
 import type { Donor } from "@/types";
 
 export type DonorStatus = "active" | "lapsed" | "cancelled" | "one_time_only";
 export type DonorListItem = {
-  id: string; display_name: string; email_normalized: string | null; status: DonorStatus; pledgeCount: number;
+  id: string; display_name: string; email_normalized: string | null; status: DonorStatus; subscriptionCount: number;
 };
 
 export async function listDonors(query?: string): Promise<DonorListItem[]> {
@@ -37,7 +38,7 @@ export async function listDonors(query?: string): Promise<DonorListItem[]> {
     return {
       id: d.id as string, display_name: d.display_name as string,
       email_normalized: (d.email_normalized as string | null) ?? null,
-      status: classifyDonor(dp, dpay, asOf, donorCfg.lapsedAfterMonths), pledgeCount: dp.length,
+      status: classifyDonor(dp, dpay, asOf, donorCfg.lapsedAfterMonths), subscriptionCount: consolidateSubscriptions(dp).length,
     };
   });
 }
