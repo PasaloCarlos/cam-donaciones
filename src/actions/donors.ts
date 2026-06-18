@@ -5,7 +5,7 @@ import { requireAdmin } from "@/lib/admin-guard";
 import { classifyDonor, type MetricPledge, type MetricPayment } from "@/lib/metrics";
 import { donorTimeline, type TimelineEntry } from "@/lib/donor-timeline";
 import { donor as donorCfg } from "@/config/donor.config";
-import { PLEDGE_COLS, PAYMENT_COLS } from "@/actions/metrics";
+import { PLEDGE_COLS, PAYMENT_COLS } from "@/lib/query-cols";
 import type { Donor } from "@/types";
 
 export type DonorStatus = "active" | "lapsed" | "cancelled" | "one_time_only";

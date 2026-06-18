@@ -5,9 +5,7 @@ import { requireAdmin } from "@/lib/admin-guard";
 import { buildDonorDashboard, type DonorDashboard } from "@/lib/donor-dashboard";
 import { donor } from "@/config/donor.config";
 import type { MetricPledge, MetricPayment } from "@/lib/metrics";
-
-const PLEDGE_COLS = "id, donor_id, source, kind, status, goal, monthly_net_cents, monthly_gross_cents, subscription_date, cancelled_at";
-const PAYMENT_COLS = "donor_id, source, period_month, gross_cents, net_cents, goal";
+import { PLEDGE_COLS, PAYMENT_COLS } from "@/lib/query-cols";
 
 export async function getDonorDashboard(asOfISO?: string): Promise<DonorDashboard> {
   await requireAdmin();
@@ -24,4 +22,3 @@ export async function getDonorDashboard(asOfISO?: string): Promise<DonorDashboar
   );
 }
 
-export { PLEDGE_COLS, PAYMENT_COLS };
