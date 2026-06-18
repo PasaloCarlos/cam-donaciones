@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Lock } from "lucide-react";
 import { adminLogin } from "@/actions/admin";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { CamLogo } from "@/components/shared/cam-logo";
 
 export function LoginForm() {
   const [error, setError] = useState<string | null>(null);
@@ -23,9 +23,7 @@ export function LoginForm() {
   return (
     <form action={handle} className="mx-auto max-w-sm space-y-5 rounded-2xl border border-border bg-card/80 p-8">
       <div className="flex flex-col items-center text-center">
-        <span className="flex size-12 items-center justify-center rounded-full border border-primary/40 text-primary">
-          <Lock className="size-5" />
-        </span>
+        <CamLogo size={72} />
         <h1 className="mt-4 font-display text-3xl font-black uppercase">CAM Donaciones</h1>
         <p className="mt-1 text-sm text-muted-foreground">Acceso solo para administración.</p>
       </div>

@@ -13,7 +13,7 @@ export default async function PanelPage() {
         <AdminNav />
         <header className="mb-8">
           <p className="font-display text-sm uppercase tracking-[0.3em] text-primary">Plan de Apoyo Mensual</p>
-          <h1 className="mt-1 font-display text-5xl font-black uppercase">Panel</h1>
+          <h1 className="mt-1 font-display text-4xl font-black uppercase sm:text-5xl">Panel</h1>
         </header>
         <Dashboard stats={stats} />
       </div>

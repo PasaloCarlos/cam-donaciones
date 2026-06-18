@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { CamLogo } from "@/components/shared/cam-logo";
 
 const LINKS = [
   { href: "/panel", label: "Panel" },
@@ -12,7 +13,14 @@ const LINKS = [
 export function AdminNav() {
   const path = usePathname();
   return (
-    <nav className="mb-8 flex flex-wrap gap-2">
+    <nav className="mb-8 space-y-3">
+      <div className="flex items-center gap-2">
+        <CamLogo size={36} />
+        <span className="font-display text-lg font-black uppercase tracking-widest">
+          CAM Donaciones
+        </span>
+      </div>
+      <div className="flex flex-wrap gap-2">
       {LINKS.map((l) => {
         const active = path === l.href || path.startsWith(l.href + "/");
         return (
@@ -29,6 +37,7 @@ export function AdminNav() {
           </Link>
         );
       })}
+      </div>
     </nav>
   );
 }

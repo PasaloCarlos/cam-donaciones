@@ -36,6 +36,7 @@ export function DonorDetail({ detail }: { detail: Detail }) {
       <section>
         <h2 className="mb-3 font-display text-xs uppercase tracking-widest text-muted-foreground">Historial de pagos ({timeline.length})</h2>
         <div className="overflow-hidden rounded-2xl border border-border">
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-secondary/40 text-left font-display text-xs uppercase tracking-widest text-muted-foreground">
               <tr><th className="px-4 py-3">Mes</th><th className="px-3 py-3">Fuente</th><th className="px-3 py-3">Objetivo</th><th className="px-3 py-3 text-right">Neto</th></tr>
@@ -51,6 +52,7 @@ export function DonorDetail({ detail }: { detail: Detail }) {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       </section>
     </div>
