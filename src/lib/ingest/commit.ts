@@ -26,7 +26,7 @@ function donorKey(d: NormalizedDonor, i: number): string {
 
 export function planImport(
   records: NormalizedRecord[],
-  ctx: { donorIndex: DonorIndex; existingPaymentKeys: Set<string> }
+  ctx: { donorIndex: DonorIndex; existingPaymentKeys: Set<string>; existingPledgeKeys?: Set<string> }
 ): ImportPlan {
   const donorsToCreate: PlannedDonor[] = [];
   const pledgesToCreate: { donorRef: string; pledge: NormalizedPledge }[] = [];
@@ -38,6 +38,7 @@ export function planImport(
   // reuses the same temp id (don't create the same donor twice).
   const tempByKey = new Map<string, string>();
   const seenKeys = new Set<string>(ctx.existingPaymentKeys);
+  const seenPledgeKeys = new Set<string>(ctx.existingPledgeKeys ?? []);
 
   records.forEach((record, i) => {
     const key = donorKey(record.donor, i);
@@ -61,7 +62,13 @@ export function planImport(
       tempByKey.set(key, donorRef);
     }
 
-    if (record.pledge) pledgesToCreate.push({ donorRef, pledge: record.pledge });
+    if (record.pledge) {
+      const pledgeKey = `${donorRef}|${record.pledge.source}|${record.pledge.sourceYear ?? ""}`;
+      if (!seenPledgeKeys.has(pledgeKey)) {
+        seenPledgeKeys.add(pledgeKey);
+        pledgesToCreate.push({ donorRef, pledge: record.pledge });
+      }
+    }
 
     for (const payment of record.payments) {
       const idempotencyKey = paymentIdempotencyKey({
