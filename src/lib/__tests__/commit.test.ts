@@ -59,4 +59,17 @@ describe("planImport", () => {
     expect(plan.paymentsToInsert).toHaveLength(1);
     expect(plan.skippedPayments).toBe(1);
   });
+
+  it("does not merge distinct anonymous rows (no email, no name) into one donor", () => {
+    const anon = (periodMonth: string): NormalizedRecord => ({
+      donor: { email: null, name: "", phone: null },
+      pledge: null,
+      payments: [{ source: "cam_cash", periodMonth, grossCents: 2000, feeCents: 0,
+        netCents: 2000, goal: null, externalRef: null }],
+    });
+    const plan = planImport([anon("2026-01-01"), anon("2026-02-01")],
+      { donorIndex: buildDonorIndex([]), existingPaymentKeys: new Set() });
+    expect(plan.donorsToCreate).toHaveLength(2);
+    expect(plan.paymentsToInsert).toHaveLength(2);
+  });
 });

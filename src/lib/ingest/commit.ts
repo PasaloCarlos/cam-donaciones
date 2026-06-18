@@ -15,9 +15,13 @@ export type ImportPlan = {
   counts: { records: number; newDonors: number; matchedDonors: number; newPledges: number; payments: number; skipped: number };
 };
 
-// donorEmailOrName for the fallback idempotency key + new-donor identity.
-function donorKey(d: NormalizedDonor): string {
-  return normalizeEmail(d.email) ?? normalizeName(d.name);
+// Stable identity key for batch-level donor dedup. Falls back to a per-record
+// anonymous key so rows with neither email nor name never collide together.
+function donorKey(d: NormalizedDonor, i: number): string {
+  const byEmail = normalizeEmail(d.email);
+  if (byEmail) return byEmail;
+  const byName = normalizeName(d.name);
+  return byName !== "" ? byName : `__anon:${i}`;
 }
 
 export function planImport(
@@ -36,7 +40,7 @@ export function planImport(
   const seenKeys = new Set<string>(ctx.existingPaymentKeys);
 
   records.forEach((record, i) => {
-    const key = donorKey(record.donor);
+    const key = donorKey(record.donor, i);
     let donorRef: string;
 
     if (tempByKey.has(key)) {
