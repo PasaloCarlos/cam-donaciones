@@ -9,7 +9,7 @@ export function CamLogo({
 }) {
   return (
     <span
-      className={`inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-white ring-1 ring-primary/30 ${className ?? ""}`}
+      className={`inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-white ring-1 ring-border ${className ?? ""}`}
       style={{ width: size, height: size }}
     >
       <Image
