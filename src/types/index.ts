@@ -2,17 +2,11 @@ import { Database } from "./database";
 
 export type { Database };
 
-// Row types
-export type Tournament = Database["public"]["Tables"]["tournaments"]["Row"];
-export type Team = Database["public"]["Tables"]["teams"]["Row"];
-export type Player = Database["public"]["Tables"]["players"]["Row"];
+// Enum unions
+export type { DonationSource, PledgeStatus, PledgeKind, DonationGoal } from "./database";
 
-// Enums
-export type RegistrationStatus = Database["public"]["Enums"]["registration_status"];
-export type Division = Database["public"]["Enums"]["division_type"];
-
-// Joined query results
-export type TeamWithDetails = Team & {
-  tournaments: Pick<Tournament, "name" | "format" | "division"> | null;
-  players: Pick<Player, "name" | "jersey_number">[];
-};
+// Row aliases
+export type Donor = Database["public"]["Tables"]["donors"]["Row"];
+export type Pledge = Database["public"]["Tables"]["pledges"]["Row"];
+export type Payment = Database["public"]["Tables"]["payments"]["Row"];
+export type ImportBatch = Database["public"]["Tables"]["import_batches"]["Row"];

@@ -26,7 +26,7 @@ export function LoginForm() {
         <span className="flex size-12 items-center justify-center rounded-full border border-primary/40 text-primary">
           <Lock className="size-5" />
         </span>
-        <h1 className="mt-4 font-display text-3xl font-black uppercase">Panel del evento</h1>
+        <h1 className="mt-4 font-display text-3xl font-black uppercase">CAM Donaciones</h1>
         <p className="mt-1 text-sm text-muted-foreground">Acceso solo para administración.</p>
       </div>
       <div>
