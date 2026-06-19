@@ -7,6 +7,7 @@ import { CamLogo } from "@/components/shared/cam-logo";
 const LINKS = [
   { href: "/panel", label: "Panel" },
   { href: "/donantes", label: "Donantes" },
+  { href: "/registrar", label: "Registrar" },
   { href: "/import", label: "Importar" },
 ];
 
