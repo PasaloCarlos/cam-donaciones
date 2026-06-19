@@ -1,13 +1,26 @@
+import Link from "next/link";
 import { donor } from "@/config/donor.config";
 import { formatCents } from "@/lib/money";
 import type { DonorDashboard } from "@/lib/donor-dashboard";
 
-function Tile({ label, value }: { label: string; value: string | number }) {
+function Tile({ label, value, href }: { label: string; value: string | number; href?: string }) {
   const isMoney = typeof value === "string";
-  return (
-    <div className="rounded-xl border border-border bg-card/70 px-4 py-3 sm:px-5 sm:py-4">
+  const inner = (
+    <>
       <p className={`font-display font-black text-primary tabular-nums leading-tight ${isMoney ? "text-lg sm:text-2xl" : "text-3xl sm:text-4xl"}`}>{value}</p>
       <p className="mt-1 font-display text-[0.65rem] uppercase tracking-widest text-muted-foreground sm:text-xs">{label}</p>
+    </>
+  );
+  if (href) {
+    return (
+      <Link href={href} className="block rounded-xl border border-border bg-card/70 px-4 py-3 sm:px-5 sm:py-4 cursor-pointer transition-colors hover:border-primary/60">
+        {inner}
+      </Link>
+    );
+  }
+  return (
+    <div className="rounded-xl border border-border bg-card/70 px-4 py-3 sm:px-5 sm:py-4">
+      {inner}
     </div>
   );
 }
@@ -21,14 +34,14 @@ export function Dashboard({ stats }: { stats: DonorDashboard }) {
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Tile label="Recaudo mensual (MRR neto)" value={money(mrr.netCents)} />
-        <Tile label="Donantes activos" value={donorCounts.active} />
-        <Tile label="Inactivos" value={donorCounts.lapsed} />
-        <Tile label="Cancelados" value={donorCounts.cancelled} />
+        <Tile label="Recaudo mensual (MRR neto)" value={money(mrr.netCents)} href="/donantes?status=active" />
+        <Tile label="Donantes activos" value={donorCounts.active} href="/donantes?status=active" />
+        <Tile label="Inactivos" value={donorCounts.lapsed} href="/donantes?status=lapsed" />
+        <Tile label="Cancelados" value={donorCounts.cancelled} href="/donantes?status=cancelled" />
       </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Tile label="Donativos especiales" value={donorCounts.one_time_only} />
-        <Tile label="Total donantes" value={donorCounts.total} />
+        <Tile label="Donativos especiales" value={donorCounts.one_time_only} href="/donantes?status=one_time_only" />
+        <Tile label="Total donantes" value={donorCounts.total} href="/donantes" />
         <Tile label="Recaudado (total)" value={money(totalRaisedCents)} />
         <Tile label="Recaudado (año)" value={money(ytdRaisedCents)} />
       </div>
