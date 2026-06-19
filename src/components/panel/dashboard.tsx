@@ -5,9 +5,9 @@ import type { DonorDashboard } from "@/lib/donor-dashboard";
 function Tile({ label, value }: { label: string; value: string | number }) {
   const isMoney = typeof value === "string";
   return (
-    <div className="rounded-xl border border-border bg-card/70 px-5 py-4">
-      <p className={`font-display font-black text-primary tabular-nums leading-tight ${isMoney ? "text-2xl" : "text-4xl"}`}>{value}</p>
-      <p className="mt-1 font-display text-xs uppercase tracking-widest text-muted-foreground">{label}</p>
+    <div className="rounded-xl border border-border bg-card/70 px-4 py-3 sm:px-5 sm:py-4">
+      <p className={`font-display font-black text-primary tabular-nums leading-tight ${isMoney ? "text-lg sm:text-2xl" : "text-3xl sm:text-4xl"}`}>{value}</p>
+      <p className="mt-1 font-display text-[0.65rem] uppercase tracking-widest text-muted-foreground sm:text-xs">{label}</p>
     </div>
   );
 }
