@@ -15,7 +15,7 @@ export type DonorListItem = {
   id: string; display_name: string; email_normalized: string | null; status: DonorStatus; subscriptionCount: number;
 };
 
-export async function listDonors(query?: string): Promise<DonorListItem[]> {
+export async function listDonors(query?: string, status?: DonorStatus): Promise<DonorListItem[]> {
   await requireAdmin();
   const supabase = createAdminClient();
   let q = supabase.from("donors").select("id, display_name, email_normalized").order("display_name");
@@ -32,7 +32,7 @@ export async function listDonors(query?: string): Promise<DonorListItem[]> {
   ]);
   const asOf = new Date();
 
-  return list.map((d) => {
+  const result = list.map((d) => {
     const dp = pledges.filter((p) => p.donor_id === d.id);
     const dpay = payments.filter((p) => p.donor_id === d.id);
     return {
@@ -41,6 +41,9 @@ export async function listDonors(query?: string): Promise<DonorListItem[]> {
       status: classifyDonor(dp, dpay, asOf, donorCfg.lapsedAfterMonths), subscriptionCount: consolidateSubscriptions(dp).length,
     };
   });
+
+  if (status !== undefined) return result.filter((d) => d.status === status);
+  return result;
 }
 
 export type DonorDetail = { donor: Donor; pledges: MetricPledge[]; timeline: TimelineEntry[] };

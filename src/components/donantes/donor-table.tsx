@@ -15,7 +15,14 @@ const STATUS: Record<DonorStatus, { label: string; variant: "confirmed" | "pendi
   one_time_only: { label: "Único", variant: "paid" },
 };
 
-export function DonorTable({ donors, initialQuery }: { donors: DonorListItem[]; initialQuery: string }) {
+const STATUS_FILTER_LABEL: Record<DonorStatus, string> = {
+  active: "Activos",
+  lapsed: "Inactivos",
+  cancelled: "Cancelados",
+  one_time_only: "Donativos especiales",
+};
+
+export function DonorTable({ donors, initialQuery, activeStatus }: { donors: DonorListItem[]; initialQuery: string; activeStatus?: DonorStatus }) {
   const router = useRouter();
   const [q, setQ] = useState(initialQuery);
   return (
@@ -24,6 +31,14 @@ export function DonorTable({ donors, initialQuery }: { donors: DonorListItem[]; 
         <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar por nombre o email" />
         <Button type="submit">Buscar</Button>
       </form>
+      {activeStatus && (
+        <div className="flex items-center gap-2">
+          <span className="rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+            Filtro: {STATUS_FILTER_LABEL[activeStatus]}
+          </span>
+          <Link href="/donantes" className="text-xs text-muted-foreground hover:text-foreground transition-colors">✕ Limpiar</Link>
+        </div>
+      )}
       {donors.length === 0 ? (
         <p className="rounded-xl border border-border bg-card/60 p-8 text-center text-muted-foreground">No hay donantes en esta vista.</p>
       ) : (
