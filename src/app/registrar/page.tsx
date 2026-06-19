@@ -27,9 +27,7 @@ export default function RegistrarPage() {
           <summary className="cursor-pointer select-none rounded-2xl px-6 py-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground hover:text-foreground">
             Entrada detallada (recurrentes, especiales, otros)
           </summary>
-          <div className="px-0 pb-0 pt-0">
-            <ManualEntryForm />
-          </div>
+          <ManualEntryForm />
         </details>
       </div>
     </main>

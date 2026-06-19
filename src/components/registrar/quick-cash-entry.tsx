@@ -41,7 +41,7 @@ export function QuickCashEntry() {
 
   function handleSave() {
     if (!amountCents || amountCents <= 0) return;
-    const captured = { amountCents, name };
+    const captured = { amountCents: amountCents as number, name };
 
     startTransition(async () => {
       try {
@@ -54,7 +54,7 @@ export function QuickCashEntry() {
           `Donativo de ${formatCents(captured.amountCents, donor.currency)} guardado`
         );
         setCount((c) => c + 1);
-        setTotalCents((t) => t + captured.amountCents!);
+        setTotalCents((t) => t + captured.amountCents);
         setName("");
         setAmountCents(null);
         setCustomRaw("");
