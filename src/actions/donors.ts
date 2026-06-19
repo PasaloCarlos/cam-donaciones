@@ -9,8 +9,9 @@ import { PLEDGE_COLS, PAYMENT_COLS } from "@/lib/query-cols";
 import { fetchAllRows } from "@/lib/supabase/page";
 import { consolidateSubscriptions } from "@/lib/subscriptions";
 import type { Donor } from "@/types";
+import type { DonorStatus } from "@/lib/donor-status";
 
-export type DonorStatus = "active" | "lapsed" | "cancelled" | "one_time_only";
+export type { DonorStatus } from "@/lib/donor-status";
 export type DonorListItem = {
   id: string; display_name: string; email_normalized: string | null; status: DonorStatus; subscriptionCount: number;
 };
@@ -18,11 +19,15 @@ export type DonorListItem = {
 export async function listDonors(query?: string, status?: DonorStatus): Promise<DonorListItem[]> {
   await requireAdmin();
   const supabase = createAdminClient();
-  let q = supabase.from("donors").select("id, display_name, email_normalized").order("display_name");
   const clean = (query ?? "").trim().replace(/[%,]/g, "");
-  if (clean) q = q.or(`display_name.ilike.%${clean}%,email_normalized.ilike.%${clean}%`);
-  const { data: donors } = await q.limit(200);
-  const list = donors ?? [];
+  const donorsRaw = await fetchAllRows<{ id: string; display_name: string; email_normalized: string | null }>(
+    (f, t) => {
+      let q = supabase.from("donors").select("id, display_name, email_normalized").order("display_name");
+      if (clean) q = q.or(`display_name.ilike.%${clean}%,email_normalized.ilike.%${clean}%`);
+      return q.range(f, t) as never;
+    }
+  );
+  const list = donorsRaw;
   const ids = list.map((d) => d.id as string);
   if (ids.length === 0) return [];
 
