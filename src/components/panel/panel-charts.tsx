@@ -85,22 +85,6 @@ function PieTooltip({ active, payload }: {
   );
 }
 
-function ChangesTooltip({ active, payload, label }: {
-  active?: boolean;
-  label?: string;
-  payload?: Array<{ name?: string; value?: number; color?: string }>;
-}) {
-  if (!active || !payload?.length) return null;
-  return (
-    <div className="rounded border border-border bg-card px-3 py-2 text-xs shadow">
-      <p className="mb-1 font-medium">{label}</p>
-      {payload.map((p, i) => (
-        <p key={i} style={{ color: p.color }}>{p.name}: {p.value}</p>
-      ))}
-    </div>
-  );
-}
-
 export function PanelCharts({ trends, bySource, byGoal }: PanelChartsProps) {
   const monthlyData = trends.monthlyNet.map((d) => ({
     month: d.month,
@@ -109,7 +93,6 @@ export function PanelCharts({ trends, bySource, byGoal }: PanelChartsProps) {
   }));
 
   const activeData = trends.activeDonors;
-  const changesData = trends.subscriptionChanges;
 
   const sourceData = Object.entries(bySource).map(([key, val]) => ({
     name: donor.sources[key as keyof typeof donor.sources] ?? key,
@@ -217,23 +200,6 @@ export function PanelCharts({ trends, bySource, byGoal }: PanelChartsProps) {
           </PieChart>
         </ResponsiveContainer>
       </ChartCard>
-
-      {/* 4. Altas vs bajas por mes — spans full width on sm+ */}
-      <div className="sm:col-span-2">
-        <ChartCard title="Altas vs bajas por mes">
-          <ResponsiveContainer width="100%" height={240}>
-            <BarChart data={changesData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-              <YAxis tick={{ fontSize: 11 }} width={36} allowDecimals={false} />
-              <Tooltip content={<ChangesTooltip />} />
-              <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11 }} />
-              <Bar dataKey="started" fill="#5B8C7B" radius={[3, 3, 0, 0]} name="Altas" />
-              <Bar dataKey="cancelled" fill="#C0431F" radius={[3, 3, 0, 0]} name="Bajas" />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartCard>
-      </div>
     </div>
   );
 }
