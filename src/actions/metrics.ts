@@ -7,6 +7,20 @@ import { donor } from "@/config/donor.config";
 import type { MetricPledge, MetricPayment } from "@/lib/metrics";
 import { PLEDGE_COLS, PAYMENT_COLS } from "@/lib/query-cols";
 import { fetchAllRows } from "@/lib/supabase/page";
+import {
+  monthlyNet,
+  activeDonorsByMonth,
+  subscriptionChangesByMonth,
+  type MonthNet,
+  type MonthActive,
+  type MonthChange,
+} from "@/lib/trends";
+
+export type Trends = {
+  monthlyNet: MonthNet[];
+  activeDonors: MonthActive[];
+  subscriptionChanges: MonthChange[];
+};
 
 export async function getDonorDashboard(asOfISO?: string): Promise<DonorDashboard> {
   await requireAdmin();
@@ -21,4 +35,18 @@ export async function getDonorDashboard(asOfISO?: string): Promise<DonorDashboar
     asOf,
     donor.lapsedAfterMonths
   );
+}
+
+export async function getTrends(): Promise<Trends> {
+  await requireAdmin();
+  const supabase = createAdminClient();
+  const [pledges, payments] = await Promise.all([
+    fetchAllRows<MetricPledge>((f, t) => supabase.from("pledges").select(PLEDGE_COLS).range(f, t) as never),
+    fetchAllRows<MetricPayment>((f, t) => supabase.from("payments").select(PAYMENT_COLS).range(f, t) as never),
+  ]);
+  return {
+    monthlyNet: monthlyNet(payments),
+    activeDonors: activeDonorsByMonth(payments),
+    subscriptionChanges: subscriptionChangesByMonth(pledges),
+  };
 }
