@@ -16,6 +16,7 @@ export const donor = {
     special: "Donante Especial",
     other: "Otro",
   },
+  onsite: { presetAmounts: [5, 10, 20, 50] },
 } as const;
 
 export type DonorConfig = typeof donor;
