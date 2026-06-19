@@ -1,5 +1,6 @@
 "use server";
 
+import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/admin-guard";
@@ -134,5 +135,47 @@ export async function submitManualEntry(formData: FormData): Promise<{ committed
   const ctx = await loadIngestContext(supabase);
   const plan = planImport([manualEntryToRecord(entry)], ctx);
   const counts = await writePlan(supabase, plan, { importer: "manual", source: entry.source, filename: null });
+  return { committed: true, counts };
+}
+
+export async function submitCashDonation(
+  formData: FormData
+): Promise<{ committed: true; counts: ImportPlan["counts"] }> {
+  await requireAdmin();
+  const name = String(formData.get("name") ?? "").trim();
+  const grossCents = Math.round(Number(formData.get("gross") ?? 0) * 100);
+  if (!Number.isFinite(grossCents) || grossCents <= 0) throw new Error("Ingresa un monto válido.");
+  const monthInput = String(formData.get("periodMonth") ?? "").trim(); // "YYYY-MM" optional
+  const ym = /^\d{4}-\d{2}$/.test(monthInput)
+    ? monthInput
+    : new Date().toISOString().slice(0, 7);
+  const anon = name === "";
+
+  const entry: ManualEntry = {
+    source: "cam_cash",
+    kind: "one_time",
+    goal: null,
+    name: anon ? "Donante anónimo (efectivo)" : name,
+    email: anon ? "anonimo@efectivo.cam" : null,
+    phone: null,
+    address: null,
+    grossCents,
+    feeCents: 0,
+    periodMonth: `${ym}-01`,
+    subscriptionDate: `${ym}-01`,
+  };
+  const record = manualEntryToRecord(entry);
+  // Unique ref per gift so two identical same-month cash gifts both count (no idempotency collision).
+  const ref = randomUUID();
+  record.payments = record.payments.map((p) => ({ ...p, externalRef: ref }));
+
+  const supabase = createAdminClient();
+  const ctx = await loadIngestContext(supabase);
+  const plan = planImport([record], ctx);
+  const counts = await writePlan(supabase, plan, {
+    importer: "manual",
+    source: "cam_cash",
+    filename: null,
+  });
   return { committed: true, counts };
 }
