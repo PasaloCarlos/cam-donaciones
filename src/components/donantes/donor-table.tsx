@@ -27,7 +27,7 @@ export function DonorTable({ donors, initialQuery, activeStatus }: { donors: Don
   const [q, setQ] = useState(initialQuery);
   return (
     <div className="space-y-5">
-      <form onSubmit={(e) => { e.preventDefault(); router.push(`/donantes?q=${encodeURIComponent(q)}`); }} className="flex gap-3">
+      <form onSubmit={(e) => { e.preventDefault(); const params = new URLSearchParams(); if (q.trim()) params.set("q", q.trim()); if (activeStatus) params.set("status", activeStatus); router.push(`/donantes${params.toString() ? `?${params}` : ""}`); }} className="flex gap-3">
         <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar por nombre o email" />
         <Button type="submit">Buscar</Button>
       </form>
@@ -36,7 +36,7 @@ export function DonorTable({ donors, initialQuery, activeStatus }: { donors: Don
           <span className="rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
             Filtro: {STATUS_FILTER_LABEL[activeStatus]}
           </span>
-          <Link href="/donantes" className="text-xs text-muted-foreground hover:text-foreground transition-colors">✕ Limpiar</Link>
+          <Link href={initialQuery ? `/donantes?q=${encodeURIComponent(initialQuery)}` : "/donantes"} className="text-xs text-muted-foreground hover:text-foreground transition-colors">✕ Limpiar</Link>
         </div>
       )}
       {donors.length === 0 ? (

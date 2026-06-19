@@ -1,15 +1,14 @@
 import { AdminNav } from "@/components/admin/admin-nav";
 import { listDonors, type DonorStatus } from "@/actions/donors";
+import { DONOR_STATUSES } from "@/lib/donor-status";
 import { DonorTable } from "@/components/donantes/donor-table";
 
 export const metadata = { title: "Donantes — CAM Donaciones", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
-const VALID_STATUSES: DonorStatus[] = ["active", "lapsed", "cancelled", "one_time_only"];
-
 export default async function DonantesPage({ searchParams }: { searchParams: Promise<{ q?: string; status?: string }> }) {
   const { q, status } = await searchParams;
-  const validStatus = VALID_STATUSES.includes(status as DonorStatus) ? (status as DonorStatus) : undefined;
+  const validStatus = (DONOR_STATUSES as readonly string[]).includes(status ?? "") ? (status as DonorStatus) : undefined;
   const donors = await listDonors(q, validStatus);
   return (
     <main className="relative min-h-dvh px-6 py-10">
