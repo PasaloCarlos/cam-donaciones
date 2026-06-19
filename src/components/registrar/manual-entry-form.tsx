@@ -59,7 +59,6 @@ export function ManualEntryForm() {
           <input id="m-month" name="periodMonth" type="month" required className="flex h-11 w-full rounded-lg border border-input bg-secondary/40 px-3.5 text-base" />
         </div>
         <div><Label htmlFor="m-gross">Monto bruto ($) *</Label><Input id="m-gross" name="gross" required inputMode="decimal" /></div>
-        <div><Label htmlFor="m-fee">Comisión ($)</Label><Input id="m-fee" name="fee" defaultValue="0" inputMode="decimal" /></div>
         <div className="sm:col-span-2"><Button type="submit" disabled={pending} className="w-full sm:w-auto">Guardar donativo</Button></div>
       </form>
     </section>
